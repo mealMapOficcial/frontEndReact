@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2'; // Asegúrate de instalar la librería: `npm install sweetalert2`
 
 interface CartItem {
@@ -11,6 +12,8 @@ interface ShoppingCartProps {
 }
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart }) => {
+  const [isVisible, setIsVisible] = useState(true); // Estado para mostrar/ocultar el carrito
+
   const handleOrder = () => {
     // Mostrar la alerta con SweetAlert2
     Swal.fire({
@@ -21,9 +24,20 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart }
     });
   };
 
+  const handleCloseCart = () => {
+    setIsVisible(false); // Ocultar el carrito
+  };
+
+  if (!isVisible) return null; // No mostrar nada si el carrito está oculto
+
   return (
     <aside className="fixed right-0 top-0 w-80 h-full bg-gray-100 p-4 shadow-lg">
-      <h2 className="text-xl font-bold">Shopping Cart</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold">Shopping Cart</h2>
+        <button onClick={handleCloseCart} className="text-red-500 font-bold">
+          X
+        </button>
+      </div>
       {cartItems.length === 0 ? (
         <p className="text-gray-500 mt-4">No items in the cart</p>
       ) : (
