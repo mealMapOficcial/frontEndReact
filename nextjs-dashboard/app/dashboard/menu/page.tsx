@@ -11,6 +11,7 @@ interface CartItem {
 
 export default function MenusPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isCartVisible, setIsCartVisible] = useState(false); // Controlar la visibilidad del carrito
 
   const addToCart = (name: string, quantity: number) => {
     const existingItem = cartItems.find((item) => item.name === name);
@@ -25,18 +26,15 @@ export default function MenusPage() {
     } else {
       setCartItems([...cartItems, { name, quantity }]);
     }
+    setIsCartVisible(true); // Mostrar el carrito cuando se añade un ítem
   };
 
   const removeFromCart = (name: string) => {
     setCartItems(cartItems.filter((item) => item.name !== name));
   };
 
-  const updateQuantity = (name: string, newQuantity: number) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.name === name ? { ...item, quantity: newQuantity } : item
-      )
-    );
+  const handleCloseCart = () => {
+    setIsCartVisible(false); // Cerrar el carrito
   };
 
   return (
@@ -61,10 +59,11 @@ export default function MenusPage() {
       />
 
       {/* Menú de carrito lateral */}
-      {cartItems.length > 0 && (
+      {isCartVisible && (
         <ShoppingCart
           cartItems={cartItems}
           removeFromCart={removeFromCart}
+          onClose={handleCloseCart} // Pasar la función para cerrar el carrito
         />
       )}
     </div>
