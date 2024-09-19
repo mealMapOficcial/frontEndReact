@@ -6,9 +6,10 @@ interface CardProps {
   image: string;
   name: string;
   description: string;
+  addToCart: (dish: string, quantity: number) => void;
 }
 
-const Card: React.FC<CardProps> = ({ image, name, description }) => {
+const Card: React.FC<CardProps> = ({ image, name, description, addToCart }) => {
   const [quantity, setQuantity] = useState(1);
   const [isRemoved, setIsRemoved] = useState(false);
 
@@ -24,6 +25,10 @@ const Card: React.FC<CardProps> = ({ image, name, description }) => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
+  };
+
+  const handleAddToCart = () => {
+    addToCart(name, quantity);
   };
 
   return (
@@ -66,7 +71,10 @@ const Card: React.FC<CardProps> = ({ image, name, description }) => {
               +
             </button>
           </div>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+          <button
+            onClick={handleAddToCart}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          >
             Add
           </button>
         </div>
