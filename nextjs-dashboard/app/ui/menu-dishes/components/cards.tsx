@@ -1,3 +1,5 @@
+// /app/ui/menu-dishes/components/Card.tsx
+
 'use client';
 
 import { useState } from 'react';

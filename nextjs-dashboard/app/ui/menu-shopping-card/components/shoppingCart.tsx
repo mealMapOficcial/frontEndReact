@@ -1,16 +1,15 @@
-'use client';
-import React, { useState } from 'react';
-import Swal from 'sweetalert2';
+// /app/ui/menu-shopping-cart/components/ShoppingCart.tsx
 
-interface CartItem {
-  name: string;
-  quantity: number; // Añadimos la propiedad de cantidad
-}
+'use client';
+
+import React from 'react';
+import Swal from 'sweetalert2';
+import { CartItem } from '@/app/shared/interfaces/CartItem';
 
 interface ShoppingCartProps {
   cartItems: CartItem[];
   removeFromCart: (name: string) => void;
-  onClose: () => void; // Función para cerrar el carrito
+  onClose: () => void;
 }
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, onClose }) => {
@@ -21,7 +20,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
       icon: 'success',
       confirmButtonText: 'OK',
     }).then(() => {
-      onClose(); // Cerrar el carrito después de realizar el pedido
+      onClose();
     });
   };
 
@@ -41,7 +40,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
             <details>
               <summary className="cursor-pointer flex items-center justify-between">
                 <h3 className="text-lg font-semibold">{item.name}</h3>
-                <span className="text-gray-700">Quantity: {item.quantity}</span> {/* Mostrar la cantidad */}
+                <span className="text-gray-700">Quantity: {item.quantity}</span>
               </summary>
               <button
                 onClick={() => removeFromCart(item.name)}
@@ -54,7 +53,6 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
         ))}
       </ul>
 
-      {/* Botón de Ordenar */}
       {cartItems.length > 0 && (
         <button
           onClick={handleOrder}
@@ -68,3 +66,4 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
 };
 
 export default ShoppingCart;
+;
