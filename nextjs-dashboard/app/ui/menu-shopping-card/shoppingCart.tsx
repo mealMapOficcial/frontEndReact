@@ -28,13 +28,13 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart }
     setIsVisible(false); // Ocultar el carrito
   };
 
-  if (!isVisible) return null; // No mostrar nada si el carrito está oculto
+  if (!isVisible) return null ; // No mostrar nada si el carrito está oculto
 
   return (
     <aside className="fixed right-0 top-0 w-80 h-full bg-gray-100 p-4 shadow-lg">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">Shopping Cart</h2>
-        <button onClick={handleCloseCart} className="text-red-500 font-bold">
+        <button onClick={handleCloseCart} className="text-dark-500 font-bold">
           X
         </button>
       </div>
