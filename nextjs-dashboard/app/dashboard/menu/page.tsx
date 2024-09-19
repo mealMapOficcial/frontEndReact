@@ -5,7 +5,7 @@ import ShoppingCart from '@/app/ui/menu-shopping-card/components/shoppingCart';
 import { useCart } from '@/app/ui/menu-dishes/hooks/useCart';
 
 export default function MenusPage() {
-  const { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart } = useCart();
+  const { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart, clearCart } = useCart();
 
   return (
     <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -30,9 +30,10 @@ export default function MenusPage() {
 
       {isCartVisible && (
         <ShoppingCart
-          cartItems={cartItems}
-          removeFromCart={removeFromCart}
-          onClose={handleCloseCart}
+        cartItems={cartItems}
+        removeFromCart={removeFromCart}
+        clearCart={clearCart}  // Pasar clearCart como prop
+        onClose={handleCloseCart}
         />
       )}
     </div>

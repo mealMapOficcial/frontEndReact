@@ -25,9 +25,15 @@ export const useCart = () => {
     setCartItems(cartItems.filter((item) => item.name !== name));
   };
 
+  const clearCart = () => {
+    setCartItems([]); // Esta función vacía el carrito
+  };
+  
   const handleCloseCart = () => {
     setIsCartVisible(false);
   };
 
-  return { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart };
+  return { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart,
+    clearCart
+  };
 };

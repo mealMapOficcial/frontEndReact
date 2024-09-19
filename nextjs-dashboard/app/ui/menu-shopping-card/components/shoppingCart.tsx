@@ -1,5 +1,3 @@
-// /app/ui/menu-shopping-cart/components/ShoppingCart.tsx
-
 'use client';
 
 import React from 'react';
@@ -9,10 +7,12 @@ import { CartItem } from '@/app/shared/interfaces/CartItem';
 interface ShoppingCartProps {
   cartItems: CartItem[];
   removeFromCart: (name: string) => void;
+  clearCart: () => void;  // Añadimos clearCart como prop
   onClose: () => void;
 }
 
-const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, onClose }) => {
+
+const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, onClose, clearCart }) => {
   const handleOrder = () => {
     Swal.fire({
       title: 'Order Success!',
@@ -20,9 +20,11 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
       icon: 'success',
       confirmButtonText: 'OK',
     }).then(() => {
+      clearCart();  // Llamamos a clearCart para vaciar el carrito
       onClose();
     });
   };
+  
 
   if (cartItems.length === 0) return null;
 
