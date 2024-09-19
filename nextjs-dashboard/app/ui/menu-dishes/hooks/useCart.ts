@@ -1,5 +1,4 @@
 // /app/ui/menu-dishes/hooks/useCart.ts
-
 import { useState } from 'react';
 import { CartItem } from '@/app/shared/interfaces/CartItem';
 
@@ -7,7 +6,7 @@ export const useCart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartVisible, setIsCartVisible] = useState(false);
 
-  const addToCart = (name: string, quantity: number) => {
+  const addToCart = (name: string, quantity: number, price: number) => {
     const existingItem = cartItems.find((item) => item.name === name);
     if (existingItem) {
       setCartItems(
@@ -16,7 +15,7 @@ export const useCart = () => {
         )
       );
     } else {
-      setCartItems([...cartItems, { name, quantity }]);
+      setCartItems([...cartItems, { name, quantity, price }]);
     }
     setIsCartVisible(true);
   };
@@ -28,12 +27,14 @@ export const useCart = () => {
   const clearCart = () => {
     setCartItems([]); // Esta función vacía el carrito
   };
-  
+
   const handleCloseCart = () => {
     setIsCartVisible(false);
   };
 
-  return { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart,
-    clearCart
+  const getTotal = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
+
+  return { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart, clearCart, getTotal };
 };

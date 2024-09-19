@@ -1,3 +1,4 @@
+// /app/ui/menu-shopping-card/components/ShoppingCart.tsx
 'use client';
 
 import React from 'react';
@@ -7,16 +8,16 @@ import { CartItem } from '@/app/shared/interfaces/CartItem';
 interface ShoppingCartProps {
   cartItems: CartItem[];
   removeFromCart: (name: string) => void;
-  clearCart: () => void;  // Añadimos clearCart como prop
+  clearCart: () => void;
   onClose: () => void;
+  getTotal: () => number;  // Añadido
 }
 
-
-const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, onClose, clearCart }) => {
+const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, onClose, clearCart, getTotal }) => {
   const handleOrder = () => {
     Swal.fire({
       title: 'Order Success!',
-      text: 'Table 101',
+      text: `Table 101\nTotal: $${getTotal().toFixed(2)}`,  // Mostrar total en el mensaje
       icon: 'success',
       confirmButtonText: 'OK',
     }).then(() => {
@@ -24,7 +25,6 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
       onClose();
     });
   };
-  
 
   if (cartItems.length === 0) return null;
 
@@ -43,6 +43,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
               <summary className="cursor-pointer flex items-center justify-between">
                 <h3 className="text-lg font-semibold">{item.name}</h3>
                 <span className="text-gray-700">Quantity: {item.quantity}</span>
+                <span className="text-gray-900">Price: ${item.price.toFixed(2)}</span> {/* Mostrar el precio */}
               </summary>
               <button
                 onClick={() => removeFromCart(item.name)}
@@ -56,16 +57,20 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, 
       </ul>
 
       {cartItems.length > 0 && (
-        <button
-          onClick={handleOrder}
-          className="bg-green-500 text-white w-full py-2 mt-6 rounded-lg"
-        >
-          Order
-        </button>
+        <>
+          <div className="mt-4 text-lg font-semibold">
+            Total: ${getTotal().toFixed(2)}  {/* Mostrar el total */}
+          </div>
+          <button
+            onClick={handleOrder}
+            className="bg-green-500 text-white w-full py-2 mt-6 rounded-lg"
+          >
+            Order
+          </button>
+        </>
       )}
     </aside>
   );
 };
 
 export default ShoppingCart;
-;
