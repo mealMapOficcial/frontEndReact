@@ -1,4 +1,3 @@
-// /app/ui/menu-dishes/components/Card.tsx
 'use client';
 
 import { useState } from 'react';
@@ -6,12 +5,11 @@ import { useState } from 'react';
 interface CardProps {
   image: string;
   name: string;
-  description: string;
-  price: number;  // Añadido
-  addToCart: (dish: string, quantity: number, price: number) => void;  // Añadido
+  description: string; // Aquí se pasará el precio
+  addToCart: (dish: string, quantity: number) => void;
 }
 
-const Card: React.FC<CardProps> = ({ image, name, description, price, addToCart }) => {
+const Card: React.FC<CardProps> = ({ image, name, description, addToCart }) => {
   const [quantity, setQuantity] = useState(1);
   const [isRemoved, setIsRemoved] = useState(false);
 
@@ -30,7 +28,7 @@ const Card: React.FC<CardProps> = ({ image, name, description, price, addToCart 
   };
 
   const handleAddToCart = () => {
-    addToCart(name, quantity, price);  // Incluye el precio al añadir al carrito
+    addToCart(name, quantity);
   };
 
   return (
@@ -39,7 +37,6 @@ const Card: React.FC<CardProps> = ({ image, name, description, price, addToCart 
       <div className="p-4">
         <h2 className="text-xl font-bold mb-2">{name}</h2>
         <p className="text-gray-700 mb-4">{description}</p>
-        <p className="text-gray-900 mb-4">Price: ${price.toFixed(2)}</p> {/* Muestra el precio */}
 
         <div className="flex items-center mb-2">
           <input
