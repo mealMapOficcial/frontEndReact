@@ -2,19 +2,29 @@
 
 import { useState } from 'react';
 
+interface Ingredient {
+  id: number;
+  name: string;
+}
+
 interface CardProps {
   image: string;
   name: string;
   description: string; // Aquí se pasará el precio
+  ingredients: Ingredient[]; // Agregar la prop para los ingredientes
   addToCart: (dish: string, quantity: number) => void;
 }
 
-const Card: React.FC<CardProps> = ({ image, name, description, addToCart }) => {
+const Card: React.FC<CardProps> = ({ image, name, description, ingredients, addToCart }) => {
   const [quantity, setQuantity] = useState(1);
-  const [isRemoved, setIsRemoved] = useState(false);
+  const [removedIngredients, setRemovedIngredients] = useState<number[]>([]);
 
-  const handleCheckboxChange = () => {
-    setIsRemoved(!isRemoved);
+  const handleCheckboxChange = (id: number) => {
+    if (removedIngredients.includes(id)) {
+      setRemovedIngredients(removedIngredients.filter(ingId => ingId !== id));
+    } else {
+      setRemovedIngredients([...removedIngredients, id]);
+    }
   };
 
   const handleIncrease = () => {
@@ -38,20 +48,22 @@ const Card: React.FC<CardProps> = ({ image, name, description, addToCart }) => {
         <h2 className="text-xl font-bold mb-2">{name}</h2>
         <p className="text-gray-700 mb-4">{description}</p>
 
-        <div className="flex items-center mb-2">
-          <input
-            type="checkbox"
-            id={`remove-${name}`}
-            className="mr-2"
-            checked={isRemoved}
-            onChange={handleCheckboxChange}
-          />
-          <label htmlFor={`remove-${name}`} className="text-gray-700">
-            Remove ingredient
-          </label>
-        </div>
+        {ingredients.map(ingredient => (
+          <div key={ingredient.id} className="flex items-center mb-2">
+            <input
+              type="checkbox"
+              id={`remove-${ingredient.id}`}
+              className="mr-2"
+              checked={removedIngredients.includes(ingredient.id)}
+              onChange={() => handleCheckboxChange(ingredient.id)}
+            />
+            <label htmlFor={`remove-${ingredient.id}`} className="text-gray-700">
+              Remove {ingredient.name}
+            </label>
+          </div>
+        ))}
 
-        {isRemoved && (
+        {removedIngredients.length > 0 && (
           <p className="text-red-500 text-sm mb-2">Ingredient removed</p>
         )}
 

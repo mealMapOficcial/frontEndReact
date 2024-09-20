@@ -63,6 +63,7 @@ export default function MenusPage() {
           image="https://via.placeholder.com/150" // Aquí puedes poner una imagen real
           name={dish.name}
           description={`Price: $${dish.price.toFixed(2)}`}
+          ingredients={dish.ingredients} // Pasar los ingredientes aquí
           addToCart={(name, quantity) => addToCart(name, quantity, dish.price)} // Asegúrate de pasar el precio
         />
       ))}
