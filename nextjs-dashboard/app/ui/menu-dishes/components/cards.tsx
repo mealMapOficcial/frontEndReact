@@ -1,3 +1,4 @@
+// components/Card.tsx
 'use client';
 
 import { useState } from 'react';
@@ -5,6 +6,8 @@ import { useState } from 'react';
 interface Ingredient {
   id: number;
   name: string;
+  price: number;
+  measure: string;
 }
 
 interface CardProps {
@@ -12,7 +15,7 @@ interface CardProps {
   name: string;
   description: string; // Aquí se pasará el precio
   ingredients: Ingredient[]; // Agregar la prop para los ingredientes
-  addToCart: (dish: string, quantity: number) => void;
+  addToCart: (dish: string, quantity: number, price: number) => void;
 }
 
 const Card: React.FC<CardProps> = ({ image, name, description, ingredients, addToCart }) => {
@@ -38,7 +41,8 @@ const Card: React.FC<CardProps> = ({ image, name, description, ingredients, addT
   };
 
   const handleAddToCart = () => {
-    addToCart(name, quantity);
+    const price = parseFloat(description.split('$')[1]); // Extraer el precio de la descripción
+    addToCart(name, quantity, price);
   };
 
   return (

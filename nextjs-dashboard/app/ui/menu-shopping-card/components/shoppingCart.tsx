@@ -13,6 +13,11 @@ interface ShoppingCartProps {
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ cartItems, removeFromCart, onClose, clearCart, getTotal }) => {
   const [peopleCount, setPeopleCount] = useState(1); // Estado para la cantidad de personas
 
+  const socket = "http://localhost:3000/";
+
+  
+
+
   const handleOrder = () => {
     Swal.fire({
       title: 'Order Success!',

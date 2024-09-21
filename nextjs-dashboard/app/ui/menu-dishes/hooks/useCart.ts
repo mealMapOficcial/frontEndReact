@@ -1,4 +1,3 @@
-// /app/ui/menu-dishes/hooks/useCart.ts
 import { useState } from 'react';
 import { CartItem } from '@/app/shared/interfaces/CartItem';
 
