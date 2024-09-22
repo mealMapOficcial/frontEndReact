@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Ingredient {
   id: number;
@@ -11,9 +11,15 @@ interface Ingredient {
 
 interface IngredientsTableProps {
   initialIngredients: Ingredient[];
+  onDeleteIngredient: (id: number) => void;
+  onUpdateIngredient: (ingredient: Ingredient) => void;
 }
 
-const IngredientsTable: React.FC<IngredientsTableProps> = ({ initialIngredients }) => {
+const IngredientsTable: React.FC<IngredientsTableProps> = ({
+  initialIngredients,
+  onDeleteIngredient,
+  onUpdateIngredient,
+}) => {
   const [ingredients, setIngredients] = useState<Ingredient[]>(initialIngredients);
   const [editingIngredient, setEditingIngredient] = useState<Ingredient | null>(null);
   const [updatedName, setUpdatedName] = useState('');
@@ -21,9 +27,10 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({ initialIngredients 
   const [updatedPrice, setUpdatedPrice] = useState(0);
   const [updatedMeasure, setUpdatedMeasure] = useState('');
 
-  const handleDelete = (id: number) => {
-    setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
-  };
+  // Actualiza el estado de ingredientes cuando cambie initialIngredients
+  useEffect(() => {
+    setIngredients(initialIngredients);
+  }, [initialIngredients]);
 
   const handleEdit = (ingredient: Ingredient) => {
     setEditingIngredient(ingredient);
@@ -35,13 +42,15 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({ initialIngredients 
 
   const handleSave = () => {
     if (editingIngredient) {
-      const updatedIngredients = ingredients.map((ingredient) =>
-        ingredient.id === editingIngredient.id
-          ? { ...ingredient, name: updatedName,quantity:  updatedQuantity, price: updatedPrice, measure: updatedMeasure }
-          : ingredient
-      );
-      setIngredients(updatedIngredients);
-      setEditingIngredient(null); // Close the editing form
+      const updatedIngredient = {
+        ...editingIngredient,
+        name: updatedName,
+        quantity: updatedQuantity,
+        price: updatedPrice,
+        measure: updatedMeasure,
+      };
+      onUpdateIngredient(updatedIngredient);
+      setEditingIngredient(null); // Cierra el formulario de edición
     }
   };
 
@@ -65,19 +74,13 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({ initialIngredients 
               <td className="py-2 px-4 border-b">{ingredient.id}</td>
               <td className="py-2 px-4 border-b">{ingredient.name}</td>
               <td className="py-2 px-4 border-b">{ingredient.quantity}</td>
-              <td className="py-2 px-4 border-b">${ingredient.price}</td>
+              <td className="py-2 px-4 border-b">{ingredient.price}</td>
               <td className="py-2 px-4 border-b">{ingredient.measure}</td>
               <td className="py-2 px-4 border-b">
-                <button
-                  className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
-                  onClick={() => handleEdit(ingredient)}
-                >
+                <button onClick={() => handleEdit(ingredient)} className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
                   Edit
                 </button>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                  onClick={() => handleDelete(ingredient.id)}
-                >
+                <button onClick={() => onDeleteIngredient(ingredient.id)} className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 ml-2">
                   Delete
                 </button>
               </td>
@@ -87,46 +90,39 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({ initialIngredients 
       </table>
 
       {editingIngredient && (
-        <div className="mt-4 p-4 bg-gray-100 rounded shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Edit Ingredient</h3>
-          <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Name</label>
-            <input
-              className="border rounded w-full py-2 px-3 text-gray-700"
-              value={updatedName}
-              onChange={(e) => setUpdatedName(e.target.value)}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Quantity</label>
-            <input
-              type="number"
-              className="border rounded w-full py-2 px-3 text-gray-700"
-              value={updatedQuantity}
-              onChange={(e) => setUpdatedQuantity(parseInt(e.target.value))}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Price</label>
-            <input
-              type="number"
-              className="border rounded w-full py-2 px-3 text-gray-700"
-              value={updatedPrice}
-              onChange={(e) => setUpdatedPrice(parseFloat(e.target.value))}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-bold mb-2">Measure</label>
-            <input
-              className="border rounded w-full py-2 px-3 text-gray-700"
-              value={updatedMeasure}
-              onChange={(e) => setUpdatedMeasure(e.target.value)}
-            />
-          </div>
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded"
-            onClick={handleSave}
+        <div className="mt-4 p-4 border border-gray-300">
+          <h3 className="text-lg font-bold mb-2">Edit Ingredient</h3>
+          <input
+            type="text"
+            placeholder="Name"
+            value={updatedName}
+            onChange={(e) => setUpdatedName(e.target.value)}
+            className="border rounded w-full mb-2 p-2"
+          />
+          <input
+            type="number"
+            placeholder="Quantity"
+            value={updatedQuantity}
+            onChange={(e) => setUpdatedQuantity(parseInt(e.target.value))}
+            className="border rounded w-full mb-2 p-2"
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={updatedPrice}
+            onChange={(e) => setUpdatedPrice(parseFloat(e.target.value))}
+            className="border rounded w-full mb-2 p-2"
+          />
+          <select
+            value={updatedMeasure}
+            onChange={(e) => setUpdatedMeasure(e.target.value)}
+            className="border rounded w-full mb-2 p-2"
           >
+            <option value="unit">Unit</option>
+            <option value="kg">Kg</option>
+            <option value="lb">Lb</option>
+          </select>
+          <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
             Save
           </button>
         </div>
