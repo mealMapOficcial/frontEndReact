@@ -21,25 +21,25 @@ const FloatingButton: React.FC<{
   };
 
   return (
-    <div className="fixed left-4 bottom-4 flex items-start">
+    <div className="fixed right-4 bottom-4 flex items-center sm:right-6 sm:bottom-6 md:right-8 md:bottom-8">
       <button
         onClick={toggleMenu}
-        className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600"
+        className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 sm:p-4 md:p-5"
       >
         +
       </button>
 
       {isOpen && (
-        <div className="flex space-x-1 mt-2">
+        <div className="flex flex-row-reverse space-x-2 space-x-reverse mr-4 sm:space-x-3 md:space-x-4">
           <button
             onClick={handleAddIngredient}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            className="bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 text-xs sm:text-sm md:text-base"
           >
             Add Ingredient
           </button>
           <button
             onClick={handleAddDish}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 text-xs sm:text-sm md:text-base"
           >
             Add Dish
           </button>

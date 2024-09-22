@@ -45,38 +45,49 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Ingredients Table</h2>
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="py-2 px-4 border-b">ID</th>
-            <th className="py-2 px-4 border-b">Name</th>
-            <th className="py-2 px-4 border-b">Price</th>
-            <th className="py-2 px-4 border-b">Measure</th>
-            <th className="py-2 px-4 border-b">Quantity</th>
-            <th className="py-2 px-4 border-b">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {initialIngredients.map((ingredient) => (
-            <tr key={ingredient.id} className="hover:bg-gray-100">
-              <td className="py-2 px-4 border-b">{ingredient.id}</td>
-              <td className="py-2 px-4 border-b">{ingredient.name}</td>
-              <td className="py-2 px-4 border-b">${ingredient.price}</td>
-              <td className="py-2 px-4 border-b">{ingredient.measure}</td>
-              <td className="py-2 px-4 border-b">{ingredient.quantity}</td>
-              <td className="py-2 px-4 border-b">
-                <button onClick={() => handleEditClick(ingredient)} className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
-                  Edit
-                </button>
-                <button onClick={() => onDeleteIngredient(ingredient.id)} className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 ml-2">
-                  Delete
-                </button>
-              </td>
+      
+      {/* Tabla responsive */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-300">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="py-2 px-4 border-b">ID</th>
+              <th className="py-2 px-4 border-b">Name</th>
+              <th className="py-2 px-4 border-b">Price</th>
+              <th className="py-2 px-4 border-b">Measure</th>
+              <th className="py-2 px-4 border-b">Quantity</th>
+              <th className="py-2 px-4 border-b">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {initialIngredients.map((ingredient) => (
+              <tr key={ingredient.id} className="hover:bg-gray-100">
+                <td className="py-2 px-4 border-b">{ingredient.id}</td>
+                <td className="py-2 px-4 border-b">{ingredient.name}</td>
+                <td className="py-2 px-4 border-b">${ingredient.price}</td>
+                <td className="py-2 px-4 border-b">{ingredient.measure}</td>
+                <td className="py-2 px-4 border-b">{ingredient.quantity}</td>
+                <td className="py-2 px-4 border-b">
+                  <button
+                    onClick={() => handleEditClick(ingredient)}
+                    className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600 text-xs sm:text-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDeleteIngredient(ingredient.id)}
+                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-xs sm:text-sm ml-2"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
+      {/* Formulario de edición responsive */}
       {isEditing && currentIngredient && (
         <div className="mt-4 p-4 border border-gray-300 rounded">
           <h3 className="text-xl font-bold mb-2">Edit Ingredient</h3>
@@ -84,34 +95,40 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
             type="text"
             value={updatedName}
             onChange={(e) => setUpdatedName(e.target.value)}
-            className="border rounded w-full mb-2 p-2"
+            className="border rounded w-full mb-2 p-2 text-sm sm:text-base"
             placeholder="Ingredient Name"
           />
           <input
             type="number"
             value={updatedPrice}
             onChange={(e) => setUpdatedPrice(parseFloat(e.target.value))}
-            className="border rounded w-full mb-2 p-2"
+            className="border rounded w-full mb-2 p-2 text-sm sm:text-base"
             placeholder="Price"
           />
           <input
             type="text"
             value={updatedMeasure}
             onChange={(e) => setUpdatedMeasure(e.target.value)}
-            className="border rounded w-full mb-2 p-2"
+            className="border rounded w-full mb-2 p-2 text-sm sm:text-base"
             placeholder="Measure"
           />
           <input
             type="number"
             value={updatedQuantity}
             onChange={(e) => setUpdatedQuantity(parseInt(e.target.value))}
-            className="border rounded w-full mb-2 p-2"
+            className="border rounded w-full mb-2 p-2 text-sm sm:text-base"
             placeholder="Quantity"
           />
-          <button onClick={handleUpdateIngredient} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+          <button
+            onClick={handleUpdateIngredient}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm sm:text-base"
+          >
             Update
           </button>
-          <button onClick={() => setIsEditing(false)} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2">
+          <button
+            onClick={() => setIsEditing(false)}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2 text-sm sm:text-base"
+          >
             Cancel
           </button>
         </div>
