@@ -13,47 +13,44 @@ interface Dish {
   promotion: boolean;
   typeOfDishes: string;
   ingredients: { id: number; name: string; price: number; measure: string }[];
+  imageUrl: string; // Agrega la propiedad imageUrl
 }
 
 export default function MenusPage() {
   const { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart, clearCart, getTotal } = useCart();
-  const socket = useSocket("localhost:3000");
-  const [dishesData, setDishesData] = useState<Dish[]>([]);
+  const { data: dishesData } = useSocket("http://localhost:3000");
+
+  const [dishes, setDishes] = useState<Dish[]>([]);
 
   useEffect(() => {
-    // Escuchar el evento para recibir platos
-    console.log(socket.data)
-
-    socket.socket?.on("message", (data : any[]) => { 
-      console.log(data);
-      setDishesData(data);});
-    // socket.current?.on('menu-dishes', (data: Dish[]) => {
-    //   setDishesData(data);
-    // });
-
-    return () => {
-      // socket.current?.off('menu-dishes'); // Limpiar el evento al desmontar
-    };
-  }, [socket]);
+    console.log('dishesData:', dishesData); // Debugging
+    if (dishesData && Array.isArray(dishesData.dishes)) {
+      setDishes(dishesData.dishes);
+    } else {
+      console.warn('dishesData is not in the expected format:', dishesData);
+    }
+  }, [dishesData]);
 
   const handleAddToCart = (name: string, quantity: number, price: number) => {
     addToCart(name, quantity, price);
-
-    // socket.current?.emit('addToCart', { dish: name, quantity });
   };
 
   return (
     <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {dishesData.map(dish => (
-        <Card
-          key={dish.id}
-          image="https://via.placeholder.com/150"
-          name={dish.name}
-          description={`Price: $${dish.price.toFixed(2)}`}
-          ingredients={dish.ingredients}
-          addToCart={handleAddToCart}
-        />
-      ))}
+      {dishes.length > 0 ? (
+        dishes.map(dish => (
+          <Card
+            key={dish.id}
+            image={dish.imageUrl} // Usa la propiedad imageUrl
+            name={dish.name}
+            description={`Price: $${dish.price.toFixed(2)}`}
+            ingredients={dish.ingredients}
+            addToCart={handleAddToCart}
+          />
+        ))
+      ) : (
+        <p>No dishes available.</p>
+      )}
 
       {isCartVisible && (
         <ShoppingCart
