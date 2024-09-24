@@ -17,6 +17,15 @@ export default function SideNav() {
                 alt="Meal Map"
                 width={400}
                 height={400}
+                className='hidden md:block'
+            />
+
+          <Image
+                src="/Logo.jpeg"
+                alt="Meal Map"
+                width={50}
+                height={50}
+                className='block md: hidden'
             />
         </div>
       </Link>

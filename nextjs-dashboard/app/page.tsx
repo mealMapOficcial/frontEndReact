@@ -7,7 +7,7 @@ import Image from 'next/image';
 export default function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6 bg-black">
-      <div className="flex items-center justify-end h-20 items-end rounded-lg bg-orange-500 p-4 md:h-52">
+      <div className="flex items-center justify-end h-20 items-end rounded-lg bg-orange-500 p-4 md:h-52 md:px-28 md:py-12">
           <Image
                 src="/Logo.jpeg"
                 alt="Meal Map"
@@ -29,7 +29,13 @@ export default function Page() {
           </Link>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          {/*Image here*/} 
+          {/*Image here*/}
+          <Image
+                src="/Cocina.jpg"
+                alt="Meal Map"
+                width={1000}
+                height={1000}
+            />
         </div>
       </div>
     </main>
