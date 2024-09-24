@@ -23,6 +23,8 @@ const config: Config = {
         },
         seablue: "#1E3A8A",
         lightyellow: "#FFD700",
+        lightgrey: "#F5F5F5",
+        white: "#FFFFFF"
       },
     },
     keyframes: {
