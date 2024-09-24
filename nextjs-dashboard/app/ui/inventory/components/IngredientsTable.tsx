@@ -28,15 +28,17 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
     setIsEditing(true);
   };
 
-  const handleUpdateIngredient = () => {
+  const handleUpdateIngredient = async () => {
     if (currentIngredient) {
-      onUpdateIngredient({
+      const updatedIngredient = {
         ...currentIngredient,
         name: updatedName,
         price: updatedPrice,
         measure: updatedMeasure,
         quantity: updatedQuantity,
-      });
+      };
+
+      await onUpdateIngredient(updatedIngredient); // Llama a la función de actualización
       setIsEditing(false);
       setCurrentIngredient(null);
     }
@@ -51,8 +53,7 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Ingredients Table</h2>
-      
-      {/* Tabla responsive */}
+
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
@@ -93,7 +94,6 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
         </table>
       </div>
 
-      {/* Formulario de edición responsive */}
       {isEditing && currentIngredient && (
         <div className="mt-4 p-4 border border-gray-300 rounded">
           <h3 className="text-xl font-bold mb-2">Edit Ingredient</h3>
