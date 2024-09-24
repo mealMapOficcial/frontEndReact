@@ -13,14 +13,16 @@ const AddDishModal: React.FC<AddDishModalProps> = ({ onAddDish, onClose, availab
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [typeOfDishes, setTypeOfDishes] = useState('AFTERNOON');
+  const [imageUrl, setImageUrl] = useState(''); // Nueva variable para la URL de la imagen
   const [ingredients, setIngredients] = useState<{ ingredient: DishIngredient; quantity: number }[]>([]);
   const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
   const [ingredientQuantity, setIngredientQuantity] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAddIngredient = () => {
     const ingredientToAdd = availableIngredients.find(ingredient => ingredient.id === selectedIngredientId);
     if (ingredientToAdd && ingredientQuantity > 0) {
-      if (ingredientQuantity <= ingredientToAdd.quantity) { // Validar la cantidad
+      if (ingredientQuantity <= ingredientToAdd.quantity) {
         setIngredients([...ingredients, { ingredient: ingredientToAdd, quantity: ingredientQuantity }]);
         setSelectedIngredientId(null);
         setIngredientQuantity(0);
@@ -30,21 +32,51 @@ const AddDishModal: React.FC<AddDishModalProps> = ({ onAddDish, onClose, availab
     }
   };
 
-  const handleSubmit = () => {
-    if (!name || price <= 0 || ingredients.length === 0) {
+  const handleSubmit = async () => {
+    if (!name || price <= 0 || ingredients.length === 0 || !imageUrl) {
       alert('Please fill in all required fields.');
       return;
     }
-
-    onAddDish({
-      name,
-      price,
-      typeOfDishes,
-      ingredients: ingredients.map(({ ingredient, quantity }) => ({ ...ingredient, quantity })),
-      promotion: false,
-    });
-    onClose();
+  
+    try {
+      const response = await fetch('http://localhost:8080/dish/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          price,
+          typeOfDishes,
+          imageUrl,
+          ingredients: ingredients.map(({ ingredient, quantity }) => ({ name: ingredient.name, quantity })),
+          promotion: false,
+        }),
+      });
+  
+      // Verificar si la respuesta es válida
+      const contentType = response.headers.get('Content-Type');
+      let responseData;
+  
+      if (!response.ok) {
+        // Tratar de extraer el mensaje de error
+        responseData = await response.text(); // Obtener la respuesta como texto
+        throw new Error(responseData || 'Failed to create dish');
+      } else if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json(); // Solo analizar como JSON si el tipo de contenido es correcto
+      } else {
+        throw new Error('Received non-JSON response');
+      }
+  
+      onAddDish(responseData); // Suponiendo que el servidor devuelve el plato creado
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
   };
+  
+  
 
   const selectedIngredient = availableIngredients.find(ingredient => ingredient.id === selectedIngredientId);
 
@@ -52,6 +84,7 @@ const AddDishModal: React.FC<AddDishModalProps> = ({ onAddDish, onClose, availab
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white p-4 rounded shadow-lg">
         <h2 className="text-xl font-bold mb-2">Add Dish</h2>
+        {error && <p className="text-red-500">{error}</p>}
         <input
           type="text"
           placeholder="Dish Name"
@@ -65,6 +98,14 @@ const AddDishModal: React.FC<AddDishModalProps> = ({ onAddDish, onClose, availab
           placeholder="Price"
           value={price}
           onChange={(e) => setPrice(parseFloat(e.target.value))}
+          className="border rounded w-full mb-2 p-2"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Image URL"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
           className="border rounded w-full mb-2 p-2"
           required
         />
@@ -94,7 +135,6 @@ const AddDishModal: React.FC<AddDishModalProps> = ({ onAddDish, onClose, availab
           ))}
         </select>
 
-        {/* Mostrar la cantidad disponible si hay un ingrediente seleccionado */}
         {selectedIngredient && (
           <div className="mb-2 text-sm">
             <strong>Available Quantity:</strong> {selectedIngredient.quantity}

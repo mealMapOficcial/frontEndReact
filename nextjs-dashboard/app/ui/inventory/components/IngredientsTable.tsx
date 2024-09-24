@@ -42,6 +42,12 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
     }
   };
 
+  const handleDeleteClick = (id: number) => {
+    if (window.confirm('Are you sure you want to delete this ingredient?')) {
+      onDeleteIngredient(id);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Ingredients Table</h2>
@@ -75,7 +81,7 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
                     Edit
                   </button>
                   <button
-                    onClick={() => onDeleteIngredient(ingredient.id)}
+                    onClick={() => handleDeleteClick(ingredient.id)}
                     className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-xs sm:text-sm ml-2"
                   >
                     Delete

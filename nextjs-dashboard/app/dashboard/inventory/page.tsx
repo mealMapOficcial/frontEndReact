@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import AddDishModal from "@/app/ui/inventory/components/AddDishModal";
 import AddIngredientModal from "@/app/ui/inventory/components/AddIngredientModal";
@@ -9,9 +8,8 @@ import useDishes from "@/app/ui/inventory/hooks/useDishes";
 import useIngredients from "@/app/ui/inventory/hooks/useIngredients";
 import FloatingButton from '@/app/ui/inventory/components/FLoatingButton';
 
-
 export default function InventoryPage() {
-    const { ingredients, addIngredient, deleteIngredient, updateIngredient } = useIngredients();
+    const { ingredients, loading, error, addIngredient, deleteIngredient, updateIngredient } = useIngredients();
     const { dishes, addDish, deleteDish, updateDish } = useDishes();
     const [isAddDishModalOpen, setIsAddDishModalOpen] = useState(false);
     const [isAddIngredientModalOpen, setIsAddIngredientModalOpen] = useState(false);
@@ -35,6 +33,8 @@ export default function InventoryPage() {
     return (
         <section className="p-2">
             <h1 className="text-3xl font-bold mb-4">Manage Ingredients</h1>
+            {loading && <p>Loading ingredients...</p>}
+            {error && <p>Error: {error}</p>}
             <IngredientsTable
                 initialIngredients={ingredients}
                 onDeleteIngredient={deleteIngredient}
@@ -46,7 +46,7 @@ export default function InventoryPage() {
                         addIngredient(ingredient);
                         handleCloseAddIngredientModal();
                     }} 
-                    onClose={handleCloseAddIngredientModal} // Agregado para manejar el cierre
+                    onClose={handleCloseAddIngredientModal}
                 />
             )}
 

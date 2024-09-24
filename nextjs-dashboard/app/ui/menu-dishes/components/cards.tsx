@@ -10,7 +10,7 @@ interface Ingredient {
 }
 
 interface CardProps {
-  image: string;
+  image: string; // Asegúrate de que esta propiedad esté aquí
   name: string;
   description: string; // Aquí se pasará el precio
   ingredients: Ingredient[]; // Agregar la prop para los ingredientes

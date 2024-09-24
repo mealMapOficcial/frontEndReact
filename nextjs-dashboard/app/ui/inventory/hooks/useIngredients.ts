@@ -1,23 +1,49 @@
-'use client';
-import { useState } from 'react';
-
-interface Ingredient {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  measure: string;
-}
+import { useState, useEffect } from 'react';
+import { Ingredient } from '@/app/shared/interfaces/dish';
 
 const useIngredients = () => {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/ingredients/readAll');
+        if (!response.ok) {
+          throw new Error('Failed to fetch ingredients');
+        }
+        const data: Ingredient[] = await response.json();
+        setIngredients(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIngredients();
+  }, []);
 
   const addIngredient = (ingredient: Ingredient) => {
     setIngredients((prev) => [...prev, ingredient]);
   };
 
-  const deleteIngredient = (id: number) => {
-    setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+  const deleteIngredient = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/ingredients/delete/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete ingredient');
+      }
+
+      // Actualiza el estado local eliminando el ingrediente
+      setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   const updateIngredient = (updatedIngredient: Ingredient) => {
@@ -30,6 +56,8 @@ const useIngredients = () => {
 
   return {
     ingredients,
+    loading,
+    error,
     addIngredient,
     deleteIngredient,
     updateIngredient,
