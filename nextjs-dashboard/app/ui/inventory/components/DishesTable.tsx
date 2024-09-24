@@ -32,9 +32,49 @@ const DishesTable: React.FC<DishesTableProps> = ({
     setEditingDish(dish);
   };
 
-  const handleSave = (updatedDish: Dish) => {
-    onUpdateDish(updatedDish);
-    setEditingDish(null);
+  const handleSave = async (updatedDish: Dish) => {
+    try {
+      // Actualiza el plato en el servidor
+      const response = await fetch(`http://localhost:8080/dish/update/${updatedDish.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: updatedDish.name,
+          price: updatedDish.price,
+          promotion: updatedDish.promotion,
+          imageUrl: updatedDish.imageUrl,
+          typeOfDishes: updatedDish.typeOfDishes,
+          ingredients: updatedDish.ingredients.map(ingredient => ({
+            name: ingredient.name,
+            price: ingredient.price,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update dish');
+      }
+
+      // Llama a la función de actualización del plato en el componente padre
+      onUpdateDish(updatedDish);
+
+      // Muestra alerta de éxito
+      Swal.fire(
+        'Updated!',
+        'Your dish has been updated.',
+        'success'
+      ).then(() => {
+        // Refrescar la página después de mostrar la alerta
+        window.location.reload();
+      });
+
+      setEditingDish(null);
+    } catch (error) {
+      console.error('Error updating dish:', error);
+      Swal.fire('Error', 'There was an error updating the dish.', 'error');
+    }
   };
 
   const toggleDropdown = (id: number) => {
@@ -52,15 +92,13 @@ const DishesTable: React.FC<DishesTableProps> = ({
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        onDeleteDish(id); // Llama a la función para eliminar el plato
+        onDeleteDish(id);
 
-        // Mostrar alerta de éxito
         Swal.fire(
           'Deleted!',
           'Your dish has been deleted.',
           'success'
         ).then(() => {
-          // Refrescar la página después de mostrar la alerta
           window.location.reload();
         });
       }
@@ -117,7 +155,7 @@ const DishesTable: React.FC<DishesTableProps> = ({
                       <ul className="pl-4">
                         {dish.ingredients.map((ingredient) => (
                           <li key={ingredient.id} className="text-sm sm:text-base">
-                            {ingredient.name} - ${ingredient.price.toFixed(2)} ({ingredient.measure}) - Qty: {ingredient.quantity}
+                            {ingredient.name} - ${ingredient.price.toFixed(2)}
                           </li>
                         ))}
                       </ul>
