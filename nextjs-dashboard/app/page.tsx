@@ -12,12 +12,8 @@ export default function Page() {
       </div>
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
-          <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Welcome to Acme.</strong> This is the example for the{' '}
-            <a href="https://nextjs.org/learn/" className="text-blue-500">
-              Next.js Learn Course
-            </a>
-            , brought to you by Vercel.
+          <p className={`${lusitana.className} text-xl text-seablue md:text-3xl md:leading-normal`}>
+            <strong>Welcome to Meal Map.</strong> {' '} The guide to the flavor
           </p>
           <Link
             href="/login"
@@ -27,27 +23,7 @@ export default function Page() {
           </Link>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          {/*<img 
-            src="/hero-desktop.png" 
-            alt="Screenshots of the dashboard"
-            className='hidden md:block '
-            />*/}
-
-          <Image // Este metodo permite cargar las imagenes optimizadas y sin tanto peso pero es pago, hay que tener cuidado
-            src= "/Logo.jpeg"
-            alt= "Screenshots of the dashboard"
-            width={1000}
-            height={760}
-            className='hidden md:block'
-          />
-
-          <Image
-            src= "/hero-mobile.png"
-            alt= "Screenshots of the dashboard"
-            width={560}
-            height={620}
-            className='block md:hidden'
-          />
+          {/*Image here*/} 
         </div>
       </div>
     </main>
