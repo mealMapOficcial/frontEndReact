@@ -1,4 +1,3 @@
-'use client';
 import { useState, useEffect } from 'react';
 import { Ingredient } from '@/app/shared/interfaces/dish';
 
@@ -35,13 +34,15 @@ const useIngredients = () => {
       const response = await fetch(`http://localhost:8080/ingredients/delete/${id}`, {
         method: 'DELETE',
       });
+
       if (!response.ok) {
         throw new Error('Failed to delete ingredient');
       }
-      // Solo actualiza el estado si la eliminación fue exitosa
+
+      // Actualiza el estado local eliminando el ingrediente
       setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
     } catch (err) {
-      setError(err.message);
+      alert(err.message);
     }
   };
 

@@ -12,7 +12,7 @@ interface Ingredient {
 
 interface AddIngredientModalProps {
   onAddIngredient: (ingredient: Ingredient) => void;
-  onClose: () => void; // Agregado para manejar el cierre desde el botón flotante
+  onClose: () => void;
 }
 
 const AddIngredientModal: React.FC<AddIngredientModalProps> = ({ onAddIngredient, onClose }) => {
@@ -23,13 +23,31 @@ const AddIngredientModal: React.FC<AddIngredientModalProps> = ({ onAddIngredient
     measure: 'unit',
   });
 
-  const handleAddIngredient = () => {
-    if (newIngredient.name.trim() === '') return;
+  const handleAddIngredient = async () => {
+    if (newIngredient.name.trim() === '' || newIngredient.price <= 0 || newIngredient.quantity <= 0) {
+      alert('Please fill in all fields correctly.');
+      return;
+    }
 
-    const newId = Date.now(); // Genera un ID único
-    const ingredient: Ingredient = { id: newId, ...newIngredient };
-    onAddIngredient(ingredient);
-    onClose(); // Cierra el modal después de agregar el ingrediente
+    try {
+      const response = await fetch('http://localhost:8080/ingredients/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newIngredient),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create ingredient');
+      }
+
+      const createdIngredient: Ingredient = await response.json();
+      onAddIngredient(createdIngredient); // Llama a la función para agregar el ingrediente en el estado principal
+      onClose(); // Cierra el modal
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
