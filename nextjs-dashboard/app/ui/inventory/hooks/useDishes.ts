@@ -19,7 +19,6 @@ const useDishes = () => {
       if (response.ok) {
         setDishes((prev) => prev.filter((dish) => dish.id !== id));
       } else {
-        // Maneja el error, por ejemplo, mostrando un mensaje al usuario
         console.error('Error al eliminar el plato:', response.status);
       }
     } catch (error) {
@@ -27,10 +26,26 @@ const useDishes = () => {
     }
   };
 
-  const updateDish = (updatedDish: Dish) => {
-    setDishes((prev) =>
-      prev.map((dish) => (dish.id === updatedDish.id ? updatedDish : dish))
-    );
+  const updateDish = async (updatedDish: Dish) => {
+    try {
+      const response = await fetch(`http://localhost:8080/dish/update/${updatedDish.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedDish),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update dish');
+      }
+
+      setDishes((prev) =>
+        prev.map((dish) => (dish.id === updatedDish.id ? updatedDish : dish))
+      );
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return {
