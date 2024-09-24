@@ -19,7 +19,8 @@ const links = [
   },
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
   { name: 'menu', href: '/dashboard/menu', icon: UserGroupIcon },
-  { name: 'inventory', href: '/dashboard/inventory', icon: UserGroupIcon}
+  { name: 'inventory', href: '/dashboard/inventory', icon: UserGroupIcon},
+  { name: 'tables', href: '/dashboard/tables', icon: UserGroupIcon},
 ];
 
 export default function NavLinks() {
@@ -32,9 +33,9 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-            className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3
+            className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-orange-400 hover:text-white md:flex-none md:justify-start md:p-2 md:px-3
               
-              ${pathName === link.href ? "bg-sky-100 text-blue-600": ""}
+              ${pathName === link.href ? "bg-orange-500 text-white": ""}
               `}
           >
             <LinkIcon className="w-6" />

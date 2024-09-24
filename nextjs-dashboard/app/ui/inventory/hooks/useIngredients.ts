@@ -38,7 +38,9 @@ const useIngredients = () => {
       if (!response.ok) {
         throw new Error('Failed to delete ingredient');
       }
-
+ develop
+      // Actualiza el estado local eliminando el ingrediente4
+      main
       setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
     } catch (err) {
       alert(err.message);
