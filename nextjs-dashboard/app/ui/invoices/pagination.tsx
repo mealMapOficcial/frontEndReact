@@ -9,12 +9,17 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   // NOTE: Uncomment this code in Chapter 11
+  const pathname = usePathname()
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-
   const allPages = generatePagination(currentPage, totalPages);
-  const createPageURL= (page: string | number) => "#"
+  
+  const createPageURL= (page: string | number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString())
 
+    return `${pathname}?${params.toString()}`
+  }
   return (
     <>
       {/*  NOTE: Uncomment this code in Chapter 11 */}
@@ -69,13 +74,13 @@ function PaginationNumber({
   isActive: boolean;
 }) {
   const className = clsx(
-    'flex h-10 w-10 items-center justify-center text-sm border',
+    'flex h-10 w-10 items-center justify-center text-sm border bg-orange-500',
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
-      'z-10 bg-blue-600 border-blue-600 text-white': isActive,
-      'hover:bg-gray-100': !isActive && position !== 'middle',
-      'text-gray-300': position === 'middle',
+      'z-10 bg-orange-500 border-black text-white': isActive,
+      'hover:bg-orange-400': !isActive && position !== 'middle',
+      'text-white': position === 'middle',
     },
   );
 
@@ -98,10 +103,10 @@ function PaginationArrow({
   isDisabled?: boolean;
 }) {
   const className = clsx(
-    'flex h-10 w-10 items-center justify-center rounded-md border',
+    'flex h-10 w-10 items-center justify-center rounded-md border bg-orange-500',
     {
-      'pointer-events-none text-gray-300': isDisabled,
-      'hover:bg-gray-100': !isDisabled,
+      'pointer-events-none text-white': isDisabled,
+      'hover:bg-orange-400': !isDisabled,
       'mr-2 md:mr-4': direction === 'left',
       'ml-2 md:ml-4': direction === 'right',
     },

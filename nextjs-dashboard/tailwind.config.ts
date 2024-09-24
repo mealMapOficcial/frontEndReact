@@ -17,6 +17,14 @@ const config: Config = {
           500: '#0070F3',
           600: '#2F6FEB',
         },
+        orange: {
+          400:"#FF4500",
+          500: "#FF7F50"
+        },
+        seablue: "#1E3A8A",
+        lightyellow: "#FFD700",
+        lightgrey: "#F5F5F5",
+        white: "#FFFFFF"
       },
     },
     keyframes: {
