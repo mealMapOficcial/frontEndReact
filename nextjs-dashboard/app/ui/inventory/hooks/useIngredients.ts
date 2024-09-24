@@ -39,19 +39,34 @@ const useIngredients = () => {
         throw new Error('Failed to delete ingredient');
       }
 
-      // Actualiza el estado local eliminando el ingrediente
       setIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
     } catch (err) {
       alert(err.message);
     }
   };
 
-  const updateIngredient = (updatedIngredient: Ingredient) => {
-    setIngredients((prev) =>
-      prev.map((ingredient) =>
-        ingredient.id === updatedIngredient.id ? updatedIngredient : ingredient
-      )
-    );
+  const updateIngredient = async (updatedIngredient: Ingredient) => {
+    try {
+      const response = await fetch(`http://localhost:8080/ingredients/update/${updatedIngredient.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedIngredient),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update ingredient');
+      }
+
+      setIngredients((prev) =>
+        prev.map((ingredient) =>
+          ingredient.id === updatedIngredient.id ? updatedIngredient : ingredient
+        )
+      );
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return {
