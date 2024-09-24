@@ -8,8 +8,23 @@ const useDishes = () => {
     setDishes((prev) => [...prev, { ...dish, id: prev.length + 1 }]);
   };
 
-  const deleteDish = (id: number) => {
-    setDishes((prev) => prev.filter((dish) => dish.id !== id));
+  const deleteDish = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/dish/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'accept': '*/*',
+        },
+      });
+      if (response.ok) {
+        setDishes((prev) => prev.filter((dish) => dish.id !== id));
+      } else {
+        // Maneja el error, por ejemplo, mostrando un mensaje al usuario
+        console.error('Error al eliminar el plato:', response.status);
+      }
+    } catch (error) {
+      console.error('Error en la conexión:', error);
+    }
   };
 
   const updateDish = (updatedDish: Dish) => {

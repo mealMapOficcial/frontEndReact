@@ -1,22 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dish } from '@/app/shared/interfaces/dish';
+import useSocket from '@/app/ui/menu-dishes/hooks/useSocket';
 import React from 'react';
+import Swal from 'sweetalert2';
 
 interface DishesTableProps {
-  initialDishes: Dish[];
   onDeleteDish: (id: number) => void;
   onUpdateDish: (updatedDish: Dish) => void;
 }
 
 const DishesTable: React.FC<DishesTableProps> = ({
-  initialDishes,
   onDeleteDish,
   onUpdateDish,
 }) => {
+  const { data: dishesData } = useSocket("http://localhost:3000");
+  const [dishes, setDishes] = useState<Dish[]>([]);
   const [editingDish, setEditingDish] = useState<Dish | null>(null);
-  const [openDishId, setOpenDishId] = useState<number | null>(null); // Estado para manejar el dropdown
+  const [openDishId, setOpenDishId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (dishesData && Array.isArray(dishesData.dishes)) {
+      setDishes(dishesData.dishes);
+    } else {
+      console.warn('dishesData is not in the expected format:', dishesData);
+    }
+  }, [dishesData]);
 
   const handleEdit = (dish: Dish) => {
     setEditingDish(dish);
@@ -31,11 +41,36 @@ const DishesTable: React.FC<DishesTableProps> = ({
     setOpenDishId(openDishId === id ? null : id);
   };
 
+  const handleDelete = (id: number) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onDeleteDish(id); // Llama a la función para eliminar el plato
+
+        // Mostrar alerta de éxito
+        Swal.fire(
+          'Deleted!',
+          'Your dish has been deleted.',
+          'success'
+        ).then(() => {
+          // Refrescar la página después de mostrar la alerta
+          window.location.reload();
+        });
+      }
+    });
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Dishes Table</h2>
 
-      {/* Tabla responsive */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
@@ -48,7 +83,7 @@ const DishesTable: React.FC<DishesTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {initialDishes.map((dish) => (
+            {dishes.map((dish) => (
               <React.Fragment key={dish.id}>
                 <tr className="hover:bg-gray-100">
                   <td className="py-2 px-4 border-b">{dish.id}</td>
@@ -63,7 +98,7 @@ const DishesTable: React.FC<DishesTableProps> = ({
                       Edit
                     </button>
                     <button
-                      onClick={() => onDeleteDish(dish.id)}
+                      onClick={() => handleDelete(dish.id)}
                       className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 ml-2 text-xs sm:text-sm"
                     >
                       Delete
@@ -95,7 +130,6 @@ const DishesTable: React.FC<DishesTableProps> = ({
         </table>
       </div>
 
-      {/* Formulario de edición responsive */}
       {editingDish && (
         <div className="mt-4 p-4 border border-gray-300">
           <h3 className="text-lg font-bold mb-2">Edit Dish</h3>
