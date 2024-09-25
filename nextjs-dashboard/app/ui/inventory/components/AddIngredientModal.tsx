@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 
 interface Ingredient {
   id: number;
@@ -25,10 +26,10 @@ const AddIngredientModal: React.FC<AddIngredientModalProps> = ({ onAddIngredient
 
   const handleAddIngredient = async () => {
     if (newIngredient.name.trim() === '' || newIngredient.price <= 0 || newIngredient.quantity <= 0) {
-      alert('Please fill in all fields correctly.');
+      Swal.fire('Error', 'Please fill in all fields correctly.', 'error');
       return;
     }
-
+  
     try {
       const response = await fetch('http://localhost:8080/ingredients/create', {
         method: 'POST',
@@ -37,18 +38,31 @@ const AddIngredientModal: React.FC<AddIngredientModalProps> = ({ onAddIngredient
         },
         body: JSON.stringify(newIngredient),
       });
-
+  
       if (!response.ok) {
-        throw new Error('Failed to create ingredient');
+        const errorData = await response.text(); // Capturamos el cuerpo de la respuesta de error
+        const errorMessage = errorData.includes('Ingredient already exists')
+          ? 'Ingredient already exists with this name.'
+          : 'Failed to create ingredient'; // Mensaje genérico para otros errores
+        throw new Error(errorMessage);
       }
-
+  
       const createdIngredient: Ingredient = await response.json();
       onAddIngredient(createdIngredient); // Llama a la función para agregar el ingrediente en el estado principal
-      onClose(); // Cierra el modal
+  
+      // Muestra SweetAlert de éxito
+      await Swal.fire('Success', 'Ingredient added successfully!', 'success');
+  
+      // Espera 2 segundos antes de recargar la página
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (error) {
-      alert(error.message);
+      Swal.fire('Error', error.message, 'error');
     }
   };
+  
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">

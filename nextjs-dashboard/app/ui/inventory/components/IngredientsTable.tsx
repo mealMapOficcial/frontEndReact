@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { Ingredient } from '@/app/shared/interfaces/dish';
-
+import Swal from 'sweetalert2';
+import useIngredients from '../hooks/useIngredients';
 interface IngredientsTableProps {
-  initialIngredients: Ingredient[];
-  onDeleteIngredient: (id: number) => void;
+  // Eliminamos initialIngredients porque usaremos el hook para obtener los ingredientes
   onUpdateIngredient: (updatedIngredient: Ingredient) => void;
 }
 
 const IngredientsTable: React.FC<IngredientsTableProps> = ({
-  initialIngredients,
-  onDeleteIngredient,
   onUpdateIngredient,
 }) => {
+  const { ingredients, deleteIngredient } = useIngredients(); // Usamos el hook
   const [isEditing, setIsEditing] = useState(false);
   const [currentIngredient, setCurrentIngredient] = useState<Ingredient | null>(null);
   const [updatedName, setUpdatedName] = useState('');
@@ -38,17 +37,47 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
         quantity: updatedQuantity,
       };
 
-      await onUpdateIngredient(updatedIngredient); // Llama a la función de actualización
-      setIsEditing(false);
-      setCurrentIngredient(null);
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to update this ingredient?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, update it!',
+      });
+
+      if (result.isConfirmed) {
+        await onUpdateIngredient(updatedIngredient);
+        setIsEditing(false);
+        setCurrentIngredient(null);
+        Swal.fire('Updated!', 'Your ingredient has been updated.', 'success');
+      }
     }
   };
 
-  const handleDeleteClick = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this ingredient?')) {
-      onDeleteIngredient(id);
+  const handleDeleteClick = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this ingredient!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    });
+  
+    if (result.isConfirmed) {
+      await deleteIngredient(id); // Usamos la función del hook para eliminar
+      await Swal.fire('Deleted!', 'Your ingredient has been deleted.', 'success');
+  
+      // Espera 2 segundos antes de recargar la página
+      setTimeout(() => {
+        window.location.reload();
+      }, 500); // Cambia 2000 a cualquier cantidad de milisegundos que desees
     }
   };
+  
 
   return (
     <div className="container mx-auto p-4">
@@ -67,7 +96,7 @@ const IngredientsTable: React.FC<IngredientsTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {initialIngredients.map((ingredient) => (
+            {ingredients.map((ingredient) => (
               <tr key={ingredient.id} className="hover:bg-gray-100">
                 <td className="py-2 px-4 border-b">{ingredient.id}</td>
                 <td className="py-2 px-4 border-b">{ingredient.name}</td>
