@@ -20,6 +20,7 @@ const links = [
   { name: 'menu', href: '/dashboard/menu', icon: UserGroupIcon },
   { name: 'inventory', href: '/dashboard/inventory', icon: UserGroupIcon},
   { name: 'tables', href: '/dashboard/tables', icon: UserGroupIcon},
+  { name: 'admins', href: '/dashboard/admins', icon: UserGroupIcon }
 ];
 
 export default function NavLinks() {
@@ -33,7 +34,6 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-orange-400 hover:text-white md:flex-none md:justify-start md:p-2 md:px-3
-              
               ${pathName === link.href ? "bg-orange-500 text-white": ""}
               `}
           >
