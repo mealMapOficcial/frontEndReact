@@ -32,7 +32,7 @@ export default function SideNav() {
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-100 md:block"></div>
-        <form 
+        <form
           action={async () => {
             'use server';
             await signOut();
