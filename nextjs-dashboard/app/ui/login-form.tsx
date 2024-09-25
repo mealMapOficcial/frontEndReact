@@ -1,7 +1,7 @@
+// components/LoginForm.tsx
 "use client";
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';  // Importa el signIn de NextAuth
 import { lusitana } from '@/app/ui/fonts';
 import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
@@ -16,21 +16,31 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsPending(true);
+    setErrorMessage('');
 
-    // Llama a NextAuth para autenticación usando 'credentials'
-    const result = await signIn('credentials', {
-      redirect: false,  // No redirige automáticamente
-      email,
-      password,
-    });
+    try {
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    setIsPending(false);
+      if (!response.ok) {
+        throw new Error('Invalid email or password'); // Manejo de errores
+      }
 
-    if (result?.error) {
-      setErrorMessage('Invalid email or password');
-    } else {
-      // Redirige al dashboard o a la página deseada si el login es exitoso
+      // Aquí podrías manejar la respuesta, como guardar el token si se devuelve
+      const data = await response.json();
+      localStorage.setItem('token', data.token); // Suponiendo que tu respuesta incluye un token
+
+      // Redirige al dashboard
       window.location.href = '/dashboard';
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -42,10 +52,7 @@ export default function LoginForm() {
         </h1>
         <div className="w-full">
           <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="email"
-            >
+            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="email">
               Email
             </label>
             <div className="relative">
@@ -63,10 +70,7 @@ export default function LoginForm() {
             </div>
           </div>
           <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="password"
-            >
+            <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor="password">
               Password
             </label>
             <div className="relative">
@@ -89,11 +93,7 @@ export default function LoginForm() {
           {isPending ? 'Logging in...' : 'Log in'}{' '}
           <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
+        <div className="flex h-8 items-end space-x-1" aria-live="polite" aria-atomic="true">
           {errorMessage && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
