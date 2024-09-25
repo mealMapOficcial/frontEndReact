@@ -1,69 +1,16 @@
-"use client"
-<<<<<<< HEAD
-import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/router';
 
-=======
+import LoginForm from '@/app/ui/login-form';
 
-import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/router';
-
->>>>>>> 7e02d5ce2d1cc05ef92d2318cd13a2a47d2c74c1
-export default function Login() {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
-<<<<<<< HEAD
-  /* const router = useRouter(); */
-=======
-  const router = useRouter();
->>>>>>> 7e02d5ce2d1cc05ef92d2318cd13a2a47d2c74c1
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const res = await fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem('token', data.token); // Guardar el JWT en localStorage
-<<<<<<< HEAD
-      /* router.push('/dashboard') */; // Redirigir a la página protegida
-=======
-      router.push('/dashboard'); // Redirigir a la página protegida
->>>>>>> 7e02d5ce2d1cc05ef92d2318cd13a2a47d2c74c1
-    } else {
-      setError(data.message);
-    }
-  };
-
+export default function LoginPage() {
   return (
-    <div>
-      <h1>Login</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <main className="flex items-center justify-center md:h-screen bg-black">
+      <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
+        <div className="flex h-20 w-full items-end rounded-lg bg--500 p-3 md:h-36">
+          <div className="w-32 text-white md:w-36">
+          </div>
+        </div>
+        <LoginForm />
+      </div>
+    </main>
   );
 }
-
-

@@ -56,7 +56,7 @@ const AddIngredientModal: React.FC<AddIngredientModalProps> = ({ onAddIngredient
       // Espera 2 segundos antes de recargar la página
       setTimeout(() => {
         window.location.reload();
-      }, 2000);
+      }, 500);
     } catch (error) {
       Swal.fire('Error', error.message, 'error');
     }
