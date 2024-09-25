@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7e02d5ce2d1cc05ef92d2318cd13a2a47d2c74c1
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import jwt from 'jsonwebtoken';

@@ -2,22 +2,23 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import { LatestInvoice } from '@/app/lib/definitions';
-import { fetchLatestInvoices } from '@/app/lib/data';
 
+const dummyInvoices = [
+  { id: '1', name: 'John Doe', email: 'john@example.com', amount: '$100.00', image_url: '/images/profile1.jpg' },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com', amount: '$250.00', image_url: '/images/profile2.jpg' },
+  { id: '3', name: 'Bob Johnson', email: 'bob@example.com', amount: '$75.00', image_url: '/images/profile3.jpg' },
+];
 
-export default async function LatestInvoices() {
-  const latestInvoices = await fetchLatestInvoices() // We import from here to be faster thant the other way
+export default function LatestInvoices() {
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Latest Invoices
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-orange-500 p-4">
-        {/* NOTE: Uncomment this code in Chapter 7 */}
 
         <div className="bg-white px-6">
-          {latestInvoices.map((invoice, i) => {
+          {dummyInvoices.map((invoice, i) => {
             return (
               <div
                 key={invoice.id}

@@ -1,12 +1,23 @@
 "use client"
+<<<<<<< HEAD
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 
+=======
+
+import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/router';
+
+>>>>>>> 7e02d5ce2d1cc05ef92d2318cd13a2a47d2c74c1
 export default function Login() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+<<<<<<< HEAD
   /* const router = useRouter(); */
+=======
+  const router = useRouter();
+>>>>>>> 7e02d5ce2d1cc05ef92d2318cd13a2a47d2c74c1
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -22,7 +33,11 @@ export default function Login() {
 
     if (res.ok) {
       localStorage.setItem('token', data.token); // Guardar el JWT en localStorage
+<<<<<<< HEAD
       /* router.push('/dashboard') */; // Redirigir a la página protegida
+=======
+      router.push('/dashboard'); // Redirigir a la página protegida
+>>>>>>> 7e02d5ce2d1cc05ef92d2318cd13a2a47d2c74c1
     } else {
       setError(data.message);
     }
