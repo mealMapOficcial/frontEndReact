@@ -1,24 +1,31 @@
 'use client';
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import  useTable  from '../hooks/useTables';
+import useTable from '../hooks/useTables';
+
 interface AddTableModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddTable: (table: { id: string; numberOfChairs: number; isAvailable: boolean }) => void; // Este prop puede no ser necesario si usas el hook directamente
 }
 
 const AddTableModal: React.FC<AddTableModalProps> = ({ isOpen, onClose }) => {
   const { createTable, error, loading } = useTable();
-  const [newTable, setNewTable] = useState<{ idTable: number; numberOfChairs: number; disponibility: boolean; floor: number }>({
+  const [newTable, setNewTable] = useState<{
+    idTable: number;
+    numberOfChairs: number;
+    disponibility: boolean;
+    floor: number;
+    available: boolean; // Agrega la propiedad available aquí
+  }>({
     idTable: 0,
     numberOfChairs: 0,
     disponibility: true,
-    floor: 0, // Asigna el piso según tu lógica
+    floor: 0, // Cambiar según la lógica de tu aplicación
+    available: true, // Inicializa como true o false según tu lógica
   });
 
   const handleSubmit = async () => {
-    if (newTable.idTable <= 0 || newTable.numberOfChairs <= 0) {
+    if (newTable.idTable <= 0 || newTable.numberOfChairs <= 0 || newTable.floor < 0) {
       Swal.fire('Error', 'Please provide valid table details.', 'error');
       return;
     }
@@ -27,7 +34,7 @@ const AddTableModal: React.FC<AddTableModalProps> = ({ isOpen, onClose }) => {
 
     if (!error) {
       Swal.fire('Success', 'Table added successfully!', 'success');
-      setNewTable({ idTable: 0, numberOfChairs: 0, disponibility: true, floor: 0 });
+      setNewTable({ idTable: 0, numberOfChairs: 0, disponibility: true, floor: 0, available: true });
       onClose();
     } else {
       Swal.fire('Error', error, 'error');
@@ -50,6 +57,13 @@ const AddTableModal: React.FC<AddTableModalProps> = ({ isOpen, onClose }) => {
           placeholder="Number of Chairs"
           value={newTable.numberOfChairs}
           onChange={(e) => setNewTable({ ...newTable, numberOfChairs: parseInt(e.target.value) })}
+          className="border rounded w-full py-2 px-3 mb-4"
+        />
+        <input
+          type="number"
+          placeholder="Floor"
+          value={newTable.floor}
+          onChange={(e) => setNewTable({ ...newTable, floor: parseInt(e.target.value) })}
           className="border rounded w-full py-2 px-3 mb-4"
         />
         <button 

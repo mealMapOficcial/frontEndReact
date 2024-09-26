@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table } from "../../../shared/interfaces/tables";
+import { Table } from '../../../shared/interfaces/tables';
 
 const useTable = () => {
   const [error, setError] = useState<string | null>(null);
@@ -21,11 +21,11 @@ const useTable = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.errors ? errorData.errors.join(', ') : 'Invalid input');
+        setError(errorData.message || 'Invalid input');
         return;
       }
 
-      await fetchTables(); // Re-fetch tables after creating a new one
+      await fetchTables(); // Refrescar la lista de mesas después de crear una nueva
     } catch (err) {
       setError('An error occurred while creating the table.');
     } finally {
@@ -33,10 +33,35 @@ const useTable = () => {
     }
   };
 
+  const toggleTableAvailability = async (updatedTable: Table) => {
+    try {
+      const response = await fetch(`http://localhost:8080/tables/update/${updatedTable.idTable}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedTable),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error updating table:', errorData);
+        return false;
+      }
+  
+      await fetchTables(); // Refrescar la lista de mesas
+      return true;
+    } catch (error) {
+      console.error('An error occurred while toggling availability:', error);
+      return false;
+    }
+  };
+  
+
   const fetchTables = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
       const response = await fetch('http://localhost:8080/tables/readAll');
       if (!response.ok) {
@@ -44,9 +69,8 @@ const useTable = () => {
         setError(errorData.message || 'Error fetching tables');
         return;
       }
-  
+
       const data = await response.json();
-      console.log(data); // Verifica la estructura de datos
       setTables(data);
     } catch (err) {
       setError('An error occurred while fetching tables.');
@@ -54,15 +78,15 @@ const useTable = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
-    fetchTables(); // Fetch tables on mount
+    fetchTables(); // Obtener las mesas al montar el componente
   }, []);
 
   return {
     createTable,
     fetchTables,
+    toggleTableAvailability,
     tables,
     error,
     loading,
