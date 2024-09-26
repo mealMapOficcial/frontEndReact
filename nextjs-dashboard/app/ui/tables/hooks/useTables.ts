@@ -56,12 +56,11 @@ const useTable = () => {
       return false;
     }
   };
-  
 
   const fetchTables = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
       const response = await fetch('http://localhost:8080/tables/readAll');
       if (!response.ok) {
@@ -69,15 +68,17 @@ const useTable = () => {
         setError(errorData.message || 'Error fetching tables');
         return;
       }
-
+  
       const data = await response.json();
-      setTables(data);
+      console.log('Fetched Tables:', data); // Agrega esta línea
+      setTables(data); // Asigna los datos a las mesas
     } catch (err) {
       setError('An error occurred while fetching tables.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchTables(); // Obtener las mesas al montar el componente

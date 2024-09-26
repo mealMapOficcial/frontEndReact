@@ -48,6 +48,20 @@ const FloorTables: React.FC<FloorTablesProps> = ({ floors }) => {
     setSelectedTableId(null);
   };
 
+  const getFloorFromId = (id: number) => {
+    if (id >= 101 && id < 200) return 1; // IDs 101-199 son del piso 1
+    if (id >= 201 && id < 300) return 2; // IDs 201-299 son del piso 2
+    if (id >= 300 && id < 400) return 3; // IDs 300-399 son el piso 3
+    if (id >= 401 && id < 500) return 4; // IDs 401-499 son del piso 4
+    if (id >= 501 && id < 600) return 5; // IDs 501-599 son del piso 5
+    if (id >= 601 && id < 700) return 6; // IDs 601-699 son del piso 6
+    if (id >= 701 && id < 800) return 7; // IDs 701-799 son del piso 7
+    if (id >= 801 && id < 900) return 8; // IDs 801-899 son del piso 8
+    if (id >= 901 && id < 1000) return 9; // IDs 901-999 son del piso 9
+    if (id >= 1000 && id < 1100) return 10; // IDs 1000-1099 son del piso 10
+    return 0; // Pisos no definidos
+  };
+
   return (
     <div>
       <button onClick={() => setAddTableModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded mb-4">
@@ -68,7 +82,7 @@ const FloorTables: React.FC<FloorTablesProps> = ({ floors }) => {
             </thead>
             <tbody>
               {tables
-                .filter((table) => Math.floor(table.idTable / 100) === floor.floorNumber) // Filtra las mesas por piso
+                .filter((table) => getFloorFromId(table.idTable) === floor.floorNumber) // Filtra las mesas por piso
                 .map((table) => (
                   <tr key={table.idTable} className={table.available ? 'bg-blue-100' : 'bg-red-100'}>
                     <td className="py-2 px-4 border-b">{table.idTable}</td>
