@@ -5,16 +5,8 @@ import Card from '@/app/ui/menu-dishes/components/cards';
 import ShoppingCart from '@/app/ui/menu-shopping-card/components/shoppingCart';
 import { useCart } from '@/app/ui/menu-dishes/hooks/useCart';
 import useSocket from '@/app/ui/menu-dishes/hooks/useSocket';
+import { Dish } from "../../shared/interfaces/dish";
 
-interface Dish {
-  id: number;
-  name: string;
-  price: number;
-  promotion: boolean;
-  typeOfDishes: string;
-  ingredients: { id: number; name: string; price: number; measure: string }[];
-  imageUrl: string; // Agrega la propiedad imageUrl
-}
 
 export default function MenusPage() {
   const { cartItems, addToCart, removeFromCart, isCartVisible, handleCloseCart, clearCart, getTotal } = useCart();
@@ -31,8 +23,8 @@ export default function MenusPage() {
     }
   }, [dishesData]);
 
-  const handleAddToCart = (name: string, quantity: number, price: number) => {
-    addToCart(name, quantity, price);
+  const handleAddToCart = (name: string, quantity: number, price: number, ingredients: { id: number; name: string; price: number; measure: string }[], removedIngredients: number[]) => {
+    addToCart(name, quantity, price, ingredients, removedIngredients);
   };
 
   return (
@@ -45,7 +37,7 @@ export default function MenusPage() {
             name={dish.name}
             description={`Price: $${dish.price.toFixed(2)}`}
             ingredients={dish.ingredients}
-            addToCart={handleAddToCart}
+            addToCart={handleAddToCart} // Asegúrate de pasar los argumentos correctos desde el Card
           />
         ))
       ) : (
