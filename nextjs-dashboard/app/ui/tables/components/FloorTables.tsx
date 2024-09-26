@@ -4,24 +4,59 @@ import { Floor } from '@/app/shared/interfaces/tables';
 import ConfirmationModal from './ConfirmationModal';
 import AddTableModal from './AddTableModal';
 import useTable from '../hooks/useTables';
+import Swal from 'sweetalert2';
 
 interface FloorTablesProps {
   floors: Floor[];
 }
 
 const FloorTables: React.FC<FloorTablesProps> = ({ floors }) => {
-  const { tables, createTable } = useTable();
+  const { tables, createTable, fetchTables } = useTable();
   const [modalOpen, setModalOpen] = useState(false);
   const [addTableModalOpen, setAddTableModalOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
-  
-  const toggleAvailability = (tableId: string) => {
+  const [isAvailable, setIsAvailable] = useState<boolean>(true);
+
+  const toggleAvailability = (tableId: string, currentAvailability: boolean) => {
     setSelectedTable(tableId);
+    setIsAvailable(!currentAvailability); // Cambiar la disponibilidad
     setModalOpen(true);
   };
 
-  const confirmToggle = () => {
-    // Aquí debes implementar la lógica para cambiar la disponibilidad
+  const confirmToggle = async () => {
+    if (selectedTable) {
+      const result = await Swal.fire({
+        title: 'Confirmar',
+        text: `¿Estás seguro de que deseas cambiar la disponibilidad de la mesa ${selectedTable}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cambiar',
+        cancelButtonText: 'No, cancelar'
+      });
+
+      if (result.isConfirmed) {
+        const response = await fetch(`http://localhost:8080/tables/update/${selectedTable}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            numberOfChairs: tables.find(table => table.idTable.toString() === selectedTable)?.numberOfChairs || 0,
+            disponibility: isAvailable,
+            available: isAvailable,
+          }),
+        });
+
+        if (response.ok) {
+          await fetchTables(); // Actualizar la lista de mesas
+          Swal.fire('Actualizado', 'La disponibilidad ha sido actualizada.', 'success');
+        } else {
+          const errorData = await response.json();
+          Swal.fire('Error', `No se pudo actualizar: ${errorData.message}`, 'error');
+        }
+      }
+    }
+
     setModalOpen(false);
     setSelectedTable(null);
   };
@@ -50,27 +85,27 @@ const FloorTables: React.FC<FloorTablesProps> = ({ floors }) => {
               <tr className="bg-gray-200">
                 <th className="py-2 px-4 border-b">Table ID</th>
                 <th className="py-2 px-4 border-b">Chairs</th>
-                <th className="py-2 px-4 border-b">Availability</th>
+                <th className="py-2 px-4 border-b">Disponibility</th>
                 <th className="py-2 px-4 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {tables
-                .filter((table) => table.floor === floor.floorNumber) // Filtra las mesas por piso
-                .map((table) => (
-                  <tr key={table.idTable} className={table.available ? 'bg-blue-100' : 'bg-red-100'}>
-                    <td className="py-2 px-4 border-b">{table.idTable}</td>
-                    <td className="py-2 px-4 border-b">{table.numberOfChairs}</td>
-                    <td className="py-2 px-4 border-b">
-                      {table.available ? 'Available' : 'Not Available'}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      <button onClick={() => toggleAvailability(table.idTable.toString())} className="bg-yellow-500 text-white px-2 py-1 rounded">
-                        Toggle Availability
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {tables
+                  .filter((table) => table.floor === floor.floorNumber) // Filtrar mesas por piso
+                  .map((table) => (
+                    <tr key={table.idTable} className={table.disponibility ? 'bg-blue-100' : 'bg-red-100'}>
+                      <td className="py-2 px-4 border-b">{table.idTable}</td>
+                      <td className="py-2 px-4 border-b">{table.numberOfChairs}</td>
+                      <td className="py-2 px-4 border-b">
+                        {table.disponibility ? 'Available' : 'Not Available'}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        <button onClick={() => toggleAvailability(table.idTable.toString(), table.disponibility)} className="bg-yellow-500 text-white px-2 py-1 rounded">
+                          Toggle Availability
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>

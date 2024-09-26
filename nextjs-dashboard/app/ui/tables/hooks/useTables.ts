@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react';
-
-interface Table {
-  idTable: number;
-  numberOfChairs: number;
-  disponibility: boolean;
-  floor: number;
-  available: boolean; // Nueva propiedad agregada
-}
+import { Table } from "../../../shared/interfaces/tables";
 
 const useTable = () => {
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +36,7 @@ const useTable = () => {
   const fetchTables = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
       const response = await fetch('http://localhost:8080/tables/readAll');
       if (!response.ok) {
@@ -51,8 +44,9 @@ const useTable = () => {
         setError(errorData.message || 'Error fetching tables');
         return;
       }
-
+  
       const data = await response.json();
+      console.log(data); // Verifica la estructura de datos
       setTables(data);
     } catch (err) {
       setError('An error occurred while fetching tables.');
@@ -60,6 +54,7 @@ const useTable = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchTables(); // Fetch tables on mount

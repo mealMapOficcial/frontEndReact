@@ -1,9 +1,10 @@
-export interface Table {
-    id: string;
+  export interface Table {
+    idTable: number;
     numberOfChairs: number;
-    isAvailable: boolean;
+    disponibility: boolean;
+    floor: number;
+    available: boolean; // Nueva propiedad agregada
   }
-  
   export interface Floor {
     floorNumber: number;
     tables: Table[];
