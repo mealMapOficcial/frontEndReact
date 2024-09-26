@@ -40,9 +40,11 @@ const Card: React.FC<CardProps> = ({ image, name, description, ingredients, addT
   };
 
   const handleAddToCart = () => {
-    const price = parseFloat(description.split('$')[1]); // Extraer el precio de la descripción
-    addToCart(name, quantity, price);
+    const price = parseFloat(description.split('$')[1]);
+    addToCart(name, quantity, price, ingredients, removedIngredients);
   };
+  
+  
 
   return (
     <div className="max-w-xs mx-auto bg-white rounded-lg shadow-md overflow-hidden">
